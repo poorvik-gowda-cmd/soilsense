@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: soilsense-api
+    env: python
+    buildCommand: pip install -r requirements.txt && python src/train_model.py
+    startCommand: uvicorn api.app:app --host 0.0.0.0 --port $PORT
+    rootDir: .
+    envVars:
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_ANON_KEY
+        sync: false

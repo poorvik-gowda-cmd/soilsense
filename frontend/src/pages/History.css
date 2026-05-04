@@ -1,0 +1,103 @@
+.history-page { padding-bottom: 4rem; }
+
+.history-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.search-input { flex: 1; max-width: 480px; }
+.history-count { color: var(--text-muted); font-size: 0.85rem; white-space: nowrap; }
+
+.history-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 3rem;
+  color: var(--text-muted);
+}
+
+/* ── Table ── */
+.history-table-wrap { padding: 0; overflow-x: auto; }
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+.history-table thead th {
+  padding: 0.85rem 1rem;
+  text-align: left;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+.history-row {
+  border-bottom: 1px solid rgba(74,222,128,0.05);
+  transition: background 0.15s;
+}
+.history-row:hover { background: rgba(74,222,128,0.04); }
+.history-row td {
+  padding: 0.75rem 1rem;
+  color: var(--text-primary);
+  vertical-align: middle;
+}
+
+.col-date  { color: var(--text-muted); font-size: 0.78rem; white-space: nowrap; }
+.col-crop  { font-weight: 600; text-transform: capitalize; }
+.col-num   { font-family: var(--font-heading); font-weight: 600; color: var(--text-secondary); }
+
+/* Mini SHI progress bar */
+.mini-bar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.mini-bar-wrap span { font-family: var(--font-heading); font-size: 0.82rem; font-weight: 700; }
+
+.col-shi .mini-bar-wrap::before {
+  content: "";
+  display: block;
+  width: 60px;
+  height: 5px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 3px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Override: show the bar with position trick */
+.mini-bar-wrap {
+  position: relative;
+}
+.mini-bar {
+  height: 5px;
+  border-radius: 3px;
+  min-width: 3px;
+  max-width: 60px;
+  transition: width 0.5s ease;
+}
+/* Restructure to stack bar + text */
+.col-shi {
+  min-width: 100px;
+}
+.mini-bar-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+}
+
+.col-fert {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  max-width: 160px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
