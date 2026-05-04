@@ -45,9 +45,23 @@ export default function LandingPage() {
     }
   };
 
-  // GSAP Animations
+  // GSAP Animations + Snap Scroll
   useEffect(() => {
+    // Lock body scroll behavior for snap feel
+    document.documentElement.style.scrollBehavior = 'auto';
+
     const ctx = gsap.context(() => {
+      // ── Snap scrolling between slides ──
+      const sections = gsap.utils.toArray('.landing-slide');
+      ScrollTrigger.create({
+        snap: {
+          snapTo: 1 / (sections.length - 1),
+          duration: { min: 0.3, max: 0.8 },
+          delay: 0.05,
+          ease: 'power2.inOut',
+        },
+      });
+
       // Hero text entrance
       gsap.fromTo('.hero-text',
         { opacity: 0, y: 60 },
@@ -103,14 +117,17 @@ export default function LandingPage() {
 
     }, mainRef);
 
-    return () => ctx.revert();
+    return () => {
+      ctx.revert();
+      document.documentElement.style.scrollBehavior = '';
+    };
   }, []);
 
   return (
     <div ref={mainRef} style={{ fontFamily: "'Space Grotesk', 'Inter', sans-serif" }}>
 
       {/* ═══════════════ SLIDE 1: VIDEO HERO ═══════════════ */}
-      <section id="slide1" style={{
+      <section id="slide1" className="landing-slide" style={{
         position: 'relative',
         height: '100vh',
         width: '100%',
@@ -183,7 +200,7 @@ export default function LandingPage() {
       </section>
 
       {/* ═══════════════ SLIDE 2: LEFT CARD ═══════════════ */}
-      <section id="slide2" style={{
+      <section id="slide2" className="landing-slide" style={{
         position: 'relative',
         height: '100vh',
         width: '100%',
@@ -262,7 +279,7 @@ export default function LandingPage() {
       </section>
 
       {/* ═══════════════ SLIDE 3: RIGHT CARD ═══════════════ */}
-      <section id="slide3" style={{
+      <section id="slide3" className="landing-slide" style={{
         position: 'relative',
         height: '100vh',
         width: '100%',
@@ -343,7 +360,7 @@ export default function LandingPage() {
       </section>
 
       {/* ═══════════════ SLIDE 4: CTA ═══════════════ */}
-      <section id="slide4" style={{
+      <section id="slide4" className="landing-slide" style={{
         position: 'relative',
         height: '100vh',
         width: '100%',

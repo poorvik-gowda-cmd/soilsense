@@ -24,7 +24,7 @@ export default function Auth() {
       if (isLogin) {
         const { error } = await login(email, password);
         if (error) throw error;
-        navigate("/");
+        navigate("/analyze");
       } else {
         const { error } = await signup(email, password);
         if (error) throw error;
