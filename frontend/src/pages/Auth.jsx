@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
 import "./Auth.css";
@@ -42,10 +42,30 @@ export default function Auth() {
 
   return (
     <div className="auth-page">
-      <div className="auth-card fade-up">
+      {/* Full-screen tropical background */}
+      <img
+        src="/images/auth-bg.png"
+        alt=""
+        className="auth-bg"
+        draggable={false}
+      />
+
+      {/* Back to Landing Page */}
+      <Link to="/" className="auth-back-btn">
+        <span className="auth-back-arrow">←</span>
+        Back to Home
+      </Link>
+
+      {/* Auth Card */}
+      <div className="auth-card">
+        {/* Brand */}
+        <div className="auth-brand">
+          <span className="auth-brand-icon">🌱</span>
+          <span className="auth-brand-name">SoilSense AI</span>
+        </div>
+
         <h1 className="auth-title">
           {isLogin ? t("auth.welcome_back") : t("auth.join")}
-          <span className="grad-text">SoilSense AI</span>
         </h1>
         <p className="auth-subtitle">
           {isLogin ? t("auth.sign_in") : t("auth.create_account")}
@@ -77,7 +97,7 @@ export default function Auth() {
             />
           </div>
 
-          <button type="submit" className="btn btn-primary auth-submit" disabled={loading}>
+          <button type="submit" className="auth-submit" disabled={loading}>
             {loading ? <span className="spinner" /> : (isLogin ? t("auth.log_in") : t("auth.sign_up"))}
           </button>
         </form>
