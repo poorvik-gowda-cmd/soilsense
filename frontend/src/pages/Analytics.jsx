@@ -3,6 +3,7 @@ import { getAnalytics } from "../api/client";
 import Plotly from "plotly.js-dist-min";
 import createPlotlyComponent from "react-plotly.js/factory";
 import SoilMap from "../components/SoilMap";
+import { useTranslation } from "react-i18next";
 import "./Analytics.css";
 
 const PlotFactory = createPlotlyComponent.default || createPlotlyComponent;
@@ -12,6 +13,7 @@ export default function Analytics() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     async function fetchData() {
@@ -31,8 +33,8 @@ export default function Analytics() {
     fetchData();
   }, []);
 
-  if (loading) return <div className="container" style={{paddingTop: "4rem"}}>Loading advanced analytics...</div>;
-  if (error || !data) return <div className="container" style={{paddingTop: "4rem", color: "var(--text-muted)"}}>{error || "No data available."}</div>;
+  if (loading) return <div className="container" style={{paddingTop: "4rem"}}>{t('analytics_page.loading')}</div>;
+  if (error || !data) return <div className="container" style={{paddingTop: "4rem", color: "var(--text-muted)"}}>{error || t('analytics_page.no_data')}</div>;
 
   const { total_predictions, data: aData } = data;
   const { 
@@ -66,47 +68,47 @@ export default function Analytics() {
     <div className="analytics-page">
       <div className="container">
         <div className="page-header fade-up">
-          <h1>Advanced <span className="grad-text">Analytics</span></h1>
-          <p>Descriptive, Diagnostic, Predictive & Prescriptive Insights</p>
+          <h1>{t('analytics_page.title1')} <span className="grad-text">{t('analytics_page.title2')}</span></h1>
+          <p>{t('analytics_page.subtitle')}</p>
         </div>
 
         {/* 1. Data Overview Panel */}
         <div className="overview-panel fade-up">
           <div className="stat-card primary-card">
-            <h3>Overall Soil Health</h3>
+            <h3>{t('analytics_page.overview.overall')}</h3>
             <div className="stat-value">{avg_shi}%</div>
-            <div className="stat-label">Average SHI Score</div>
+            <div className="stat-label">{t('analytics_page.overview.avg_shi')}</div>
           </div>
           <div className="stat-card">
-            <h3>Total Records</h3>
+            <h3>{t('analytics_page.overview.total')}</h3>
             <div className="stat-value">{total_predictions}</div>
-            <div className="stat-label">Analyses Performed</div>
+            <div className="stat-label">{t('analytics_page.overview.analyses')}</div>
           </div>
           <div className="stat-card">
-            <h3>Avg Nitrogen</h3>
+            <h3>{t('analytics_page.overview.avg_n')}</h3>
             <div className="stat-value">{avg_npk?.N}</div>
-            <div className="stat-label">kg/ha</div>
+            <div className="stat-label">{t('analytics_page.overview.unit')}</div>
           </div>
           <div className="stat-card">
-            <h3>Avg Phosphorus</h3>
+            <h3>{t('analytics_page.overview.avg_p')}</h3>
             <div className="stat-value">{avg_npk?.P}</div>
-            <div className="stat-label">kg/ha</div>
+            <div className="stat-label">{t('analytics_page.overview.unit')}</div>
           </div>
           <div className="stat-card">
-            <h3>Avg Potassium</h3>
+            <h3>{t('analytics_page.overview.avg_k')}</h3>
             <div className="stat-value">{avg_npk?.K}</div>
-            <div className="stat-label">kg/ha</div>
+            <div className="stat-label">{t('analytics_page.overview.unit')}</div>
           </div>
         </div>
 
         <div className="charts-grid fade-up">
           {/* 1. Crop Suitability Distribution */}
           <div className="chart-card">
-            <h3>Crop Suitability Distribution</h3>
+            <h3>{t('analytics_page.charts.crop_dist')}</h3>
             <Plot
               data={[{
                 type: "pie",
-                labels: crop_distribution.map(d => d.crop),
+                labels: crop_distribution.map(d => d.crop ? t(`crops.${d.crop.toLowerCase().replace(/\s/g, '')}`, { defaultValue: d.crop }) : d.crop),
                 values: crop_distribution.map(d => d.count),
                 hole: 0.4,
                 marker: { colors: ["#22c55e", "#38bdf8", "#a855f7", "#f59e0b", "#ef4444"] }
@@ -127,7 +129,7 @@ export default function Analytics() {
 
           {/* 2. Soil Health Category Distribution */}
           <div className="chart-card">
-            <h3>Soil Health Categories</h3>
+            <h3>{t('analytics_page.charts.health_cat')}</h3>
             <Plot
               data={[{
                 type: "pie",
@@ -158,7 +160,7 @@ export default function Analytics() {
 
           {/* 3. SHI Score Trend */}
           <div className="chart-card full-width">
-            <h3>Soil Health Index Trend (Timeline)</h3>
+            <h3>{t('analytics_page.charts.shi_trend')}</h3>
             <Plot
               data={[{
                 type: "scatter",
@@ -184,7 +186,7 @@ export default function Analytics() {
 
           {/* 4. Soil Health Visualization: pH Histogram */}
           <div className="chart-card">
-            <h3>pH Distribution (Diagnostic)</h3>
+            <h3>{t('analytics_page.charts.ph_dist')}</h3>
             <Plot
               data={[{
                 type: "histogram",
@@ -208,7 +210,7 @@ export default function Analytics() {
 
           {/* 5. Predictive: Yield vs Fertilizer Line Chart */}
           <div className="chart-card">
-            <h3>Avg Yield vs Fertilizer (Prescriptive)</h3>
+            <h3>{t('analytics_page.charts.yield_fert')}</h3>
             <Plot
               data={[{
                 type: "scatter",
@@ -234,7 +236,7 @@ export default function Analytics() {
 
           {/* 6. Advanced: Correlation Heatmap */}
           <div className="chart-card">
-            <h3>Parameter Correlation Heatmap</h3>
+            <h3>{t('analytics_page.charts.corr_heatmap')}</h3>
             <Plot
               data={[{
                 type: "heatmap",
@@ -259,7 +261,7 @@ export default function Analytics() {
 
           {/* 7. Fertilizer Distribution */}
           <div className="chart-card">
-            <h3>Recommended Fertilizer Distribution</h3>
+            <h3>{t('analytics_page.charts.fert_dist')}</h3>
             <Plot
               data={[{
                 type: "bar",
@@ -284,9 +286,9 @@ export default function Analytics() {
 
         {/* 5. Geospatial Map */}
         <div className="chart-card full-width fade-up" style={{ marginTop: "2rem" }}>
-          <h3>🗺️ Regional Soil Health Map</h3>
+          <h3>{t('analytics_page.charts.regional_map')}</h3>
           <p style={{ color: "var(--text-muted)", fontSize: "0.875rem", marginBottom: "1rem" }}>
-            Soil health scores visualized geographically. Upload CSVs with <code>latitude</code> and <code>longitude</code> columns to populate this map.
+            {t('analytics_page.charts.regional_desc')}
           </p>
           <div style={{ height: "480px", position: "relative", zIndex: 1 }}>
             <SoilMap points={geospatial_points} />
@@ -295,20 +297,20 @@ export default function Analytics() {
 
         {/* 6. Recent Activity Table */}
         <div className="chart-card full-width fade-up" style={{ marginTop: "2rem" }}>
-          <h3>📋 Recent Analysis Activity</h3>
+          <h3>{t('analytics_page.charts.recent')}</h3>
           <p style={{ color: "var(--text-muted)", fontSize: "0.875rem", marginBottom: "1rem" }}>
-            The latest 10 records processed and stored in your account.
+            {t('analytics_page.charts.recent_desc')}
           </p>
           <div style={{ overflowX: "auto" }}>
             <table className="recent-table">
               <thead>
                 <tr>
-                  <th>Timestamp</th>
-                  <th>Crop</th>
-                  <th>SHI</th>
-                  <th>Category</th>
-                  <th>N-P-K</th>
-                  <th>pH</th>
+                  <th>{t('analytics_page.table.time')}</th>
+                  <th>{t('analytics_page.table.crop')}</th>
+                  <th>{t('analytics_page.table.shi')}</th>
+                  <th>{t('analytics_page.table.category')}</th>
+                  <th>{t('analytics_page.table.npk')}</th>
+                  <th>{t('analytics_page.table.ph')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -316,7 +318,7 @@ export default function Analytics() {
                   recent_records.map((r, i) => (
                     <tr key={i}>
                       <td>{new Date(r.created_at).toLocaleTimeString()}</td>
-                      <td style={{ textTransform: "capitalize" }}>{r.crop_recommendation}</td>
+                      <td style={{ textTransform: "capitalize" }}>{r.crop_recommendation ? t(`crops.${r.crop_recommendation.toLowerCase().replace(/\s/g, '')}`, { defaultValue: r.crop_recommendation }) : r.crop_recommendation}</td>
                       <td>{r.soil_health_index.toFixed(1)}</td>
                       <td>{r.health_category}</td>
                       <td>{r.n_value}-{r.p_value}-{r.k_value}</td>
@@ -324,7 +326,7 @@ export default function Analytics() {
                     </tr>
                   ))
                 ) : (
-                  <tr><td colSpan="6" style={{ textAlign: "center", padding: "2rem" }}>No recent records.</td></tr>
+                  <tr><td colSpan="6" style={{ textAlign: "center", padding: "2rem" }}>{t('analytics_page.charts.no_recent')}</td></tr>
                 )}
               </tbody>
             </table>

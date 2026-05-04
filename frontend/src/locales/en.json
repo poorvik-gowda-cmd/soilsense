@@ -124,5 +124,68 @@
     "sign_up": "Sign Up",
     "no_account": "Don't have an account? ",
     "has_account": "Already have an account? "
+  },
+  "history_page": {
+    "title1": "Prediction",
+    "title2": "History",
+    "showing_analyses": "Showing analyses for",
+    "private_data": "— your data is private and isolated to your account.",
+    "filter": "🔍 Filter by crop or health category…",
+    "record": "record",
+    "records": "records",
+    "loading": "Loading your analyses…",
+    "no_analyses": "No analyses found for your account yet.",
+    "run_analysis": "Run a soil analysis or upload a CSV to get started!",
+    "table": {
+      "date": "Date",
+      "crop": "Crop",
+      "shi": "SHI Score",
+      "health": "Health",
+      "yield": "Yield (t/ha)",
+      "n": "N",
+      "p": "P",
+      "k": "K",
+      "ph": "pH",
+      "fert": "Fertilizer"
+    }
+  },
+  "analytics_page": {
+    "title1": "Advanced",
+    "title2": "Analytics",
+    "subtitle": "Descriptive, Diagnostic, Predictive & Prescriptive Insights",
+    "loading": "Loading advanced analytics...",
+    "no_data": "No data available.",
+    "overview": {
+      "overall": "Overall Soil Health",
+      "avg_shi": "Average SHI Score",
+      "total": "Total Records",
+      "analyses": "Analyses Performed",
+      "avg_n": "Avg Nitrogen",
+      "avg_p": "Avg Phosphorus",
+      "avg_k": "Avg Potassium",
+      "unit": "kg/ha"
+    },
+    "charts": {
+      "crop_dist": "Crop Suitability Distribution",
+      "health_cat": "Soil Health Categories",
+      "shi_trend": "Soil Health Index Trend (Timeline)",
+      "ph_dist": "pH Distribution (Diagnostic)",
+      "yield_fert": "Avg Yield vs Fertilizer (Prescriptive)",
+      "corr_heatmap": "Parameter Correlation Heatmap",
+      "fert_dist": "Recommended Fertilizer Distribution",
+      "regional_map": "🗺️ Regional Soil Health Map",
+      "regional_desc": "Soil health scores visualized geographically. Upload CSVs with latitude and longitude columns to populate this map.",
+      "recent": "📋 Recent Analysis Activity",
+      "recent_desc": "The latest 10 records processed and stored in your account.",
+      "no_recent": "No recent records."
+    },
+    "table": {
+      "time": "Timestamp",
+      "crop": "Crop",
+      "shi": "SHI",
+      "category": "Category",
+      "npk": "N-P-K",
+      "ph": "pH"
+    }
   }
 }

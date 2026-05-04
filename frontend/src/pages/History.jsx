@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { getHistory } from "../api/client";
 import { useAuth } from "../context/AuthContext";
+import { useTranslation } from "react-i18next";
 import "./History.css";
 
 const BADGE_MAP = {
@@ -24,6 +25,7 @@ export default function History() {
   const [error,   setError]   = useState("");
   const [search,  setSearch]  = useState("");
   const { user } = useAuth();
+  const { t } = useTranslation();
 
   useEffect(() => {
     getHistory(100)
@@ -42,27 +44,27 @@ export default function History() {
     <div className="history-page">
       <div className="container">
         <div className="page-header fade-up">
-          <h1>Prediction <span className="grad-text">History</span></h1>
+          <h1>{t('history_page.title1')} <span className="grad-text">{t('history_page.title2')}</span></h1>
           <p>
-            Showing analyses for <strong style={{ color: "var(--primary)" }}>{user?.email}</strong>
-            {" "}— your data is private and isolated to your account.
+            {t('history_page.showing_analyses')} <strong style={{ color: "var(--primary)" }}>{user?.email}</strong>
+            {" "}{t('history_page.private_data')}
           </p>
         </div>
 
         <div className="history-toolbar fade-up">
           <input
             className="form-input search-input"
-            placeholder="🔍 Filter by crop or health category…"
+            placeholder={t('history_page.filter')}
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
-          <span className="history-count">{filtered.length} record{filtered.length !== 1 ? "s" : ""}</span>
+          <span className="history-count">{filtered.length} {filtered.length !== 1 ? t('history_page.records') : t('history_page.record')}</span>
         </div>
 
         {loading && (
           <div className="history-loading">
             <span className="spinner" style={{ width: 32, height: 32, borderWidth: 3 }} />
-            <p>Loading your analyses…</p>
+            <p>{t('history_page.loading')}</p>
           </div>
         )}
 
@@ -75,8 +77,8 @@ export default function History() {
         {!loading && !error && filtered.length === 0 && (
           <div className="card" style={{ textAlign: "center", color: "var(--text-muted)", padding: "3rem" }}>
             <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>🌱</div>
-            <p>No analyses found for your account yet.</p>
-            <p style={{ marginTop: "0.5rem" }}>Run a soil analysis or upload a CSV to get started!</p>
+            <p>{t('history_page.no_analyses')}</p>
+            <p style={{ marginTop: "0.5rem" }}>{t('history_page.run_analysis')}</p>
           </div>
         )}
 
@@ -85,16 +87,16 @@ export default function History() {
             <table className="history-table">
               <thead>
                 <tr>
-                  <th>Date</th>
-                  <th>Crop</th>
-                  <th>SHI Score</th>
-                  <th>Health</th>
-                  <th>Yield (t/ha)</th>
-                  <th>N</th>
-                  <th>P</th>
-                  <th>K</th>
-                  <th>pH</th>
-                  <th>Fertilizer</th>
+                  <th>{t('history_page.table.date')}</th>
+                  <th>{t('history_page.table.crop')}</th>
+                  <th>{t('history_page.table.shi')}</th>
+                  <th>{t('history_page.table.health')}</th>
+                  <th>{t('history_page.table.yield')}</th>
+                  <th>{t('history_page.table.n')}</th>
+                  <th>{t('history_page.table.p')}</th>
+                  <th>{t('history_page.table.k')}</th>
+                  <th>{t('history_page.table.ph')}</th>
+                  <th>{t('history_page.table.fert')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -105,7 +107,7 @@ export default function History() {
                   return (
                     <tr key={r.id || i} className="history-row">
                       <td className="col-date">{fmt(r.created_at)}</td>
-                      <td className="col-crop" style={{ textTransform: "capitalize" }}>{r.crop_recommendation || "—"}</td>
+                      <td className="col-crop" style={{ textTransform: "capitalize" }}>{r.crop_recommendation ? t(`crops.${r.crop_recommendation.toLowerCase().replace(/\s/g, '')}`, { defaultValue: r.crop_recommendation }) : "—"}</td>
                       <td className="col-shi">
                         <div className="mini-bar-wrap">
                           <div
