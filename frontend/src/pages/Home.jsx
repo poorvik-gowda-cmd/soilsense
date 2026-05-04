@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { predictSoil } from "../api/client";
+import { predictSoil, parseVoiceText } from "../api/client";
 import CsvUploader from "../components/CsvUploader";
 import "./Home.css";
 
@@ -66,11 +66,47 @@ export default function Home() {
   const [values, setValues]   = useState(buildDefaults());
   const [geo, setGeo]         = useState({ latitude: "", longitude: "" });
   const [loading, setLoading] = useState(false);
+  const [listening, setListening] = useState(false);
   const [error, setError]     = useState("");
   const navigate              = useNavigate();
 
   const handleChange = (key, val) => setValues(prev => ({ ...prev, [key]: val }));
   const handleGeoChange = (key, val) => setGeo(prev => ({ ...prev, [key]: val }));
+
+  const handleVoice = () => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert("Your browser does not support the Web Speech API. Please try Google Chrome.");
+      return;
+    }
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'en-US';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onstart = () => {
+      setListening(true);
+    };
+
+    recognition.onresult = async (event) => {
+      const transcript = event.results[0][0].transcript;
+      try {
+        const { data } = await parseVoiceText(transcript);
+        setValues(prev => ({ ...prev, ...data }));
+      } catch (err) {
+        console.error("Voice parsing failed:", err);
+      } finally {
+        setListening(false);
+      }
+    };
+
+    recognition.onerror = (event) => {
+      console.error("Speech recognition error:", event.error);
+      setListening(false);
+    };
+
+    recognition.start();
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -109,7 +145,18 @@ export default function Home() {
 
         <form onSubmit={handleSubmit} className="soil-form fade-up">
           <div className="form-section">
-            <h2 className="section-title">🧪 Soil Nutrients</h2>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <h2 className="section-title" style={{ margin: 0 }}>🧪 Soil Nutrients</h2>
+              <button 
+                type="button" 
+                onClick={handleVoice} 
+                disabled={listening}
+                className="btn btn-ghost" 
+                style={{ padding: "0.5rem 1rem", fontSize: "1rem", borderRadius: "20px", display: "flex", alignItems: "center", gap: "0.5rem" }}
+              >
+                {listening ? <><span className="spinner" style={{width: "14px", height: "14px"}}/> Listening...</> : "🎤 Voice Input"}
+              </button>
+            </div>
             <div className="fields-grid">
               {FIELDS.slice(0,4).map(f => (
                 <SliderInput key={f.key} field={f} value={values[f.key]} onChange={handleChange} />

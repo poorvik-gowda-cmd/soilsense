@@ -27,5 +27,6 @@ export const uploadCsv = (file) => {
 export const getHistory = (limit = 20) => api.get(`/history?limit=${limit}`);
 export const getAnalytics = () => api.get("/analytics");
 export const healthCheck = () => api.get("/health");
+export const parseVoiceText = (text) => api.post("/api/voice/parse", { text });
 
 export default api;

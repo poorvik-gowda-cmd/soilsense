@@ -61,6 +61,8 @@ app.include_router(history_router)
 app.include_router(analytics_router)
 from routers.upload import router as upload_router
 app.include_router(upload_router)
+from routers.voice import router as voice_router
+app.include_router(voice_router)
 
 # /predict is wired manually to inject the predictor from app.state
 @app.post("/predict", tags=["Prediction"])
