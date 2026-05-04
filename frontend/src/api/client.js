@@ -28,5 +28,6 @@ export const getHistory = (limit = 20) => api.get(`/history?limit=${limit}`);
 export const getAnalytics = () => api.get("/analytics");
 export const healthCheck = () => api.get("/health");
 export const parseVoiceText = (text) => api.post("/api/voice/parse", { text });
+export const askChatbot = (message, history = []) => api.post("/api/chat/ask", { message, history });
 
 export default api;
