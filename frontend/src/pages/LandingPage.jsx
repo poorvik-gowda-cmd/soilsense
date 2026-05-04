@@ -1,15 +1,23 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const dynamicWords = ['Soil', 'Nutrients', 'Crops', 'Yield', 'Intelligence'];
-
 export default function LandingPage() {
   const navigate = useNavigate();
   const mainRef = useRef(null);
+  const { t } = useTranslation();
+
+  const dynamicWords = [
+    t('landing.words.soil'),
+    t('landing.words.nutrients'),
+    t('landing.words.crops'),
+    t('landing.words.yield'),
+    t('landing.words.intelligence')
+  ];
 
   const [currentWord, setCurrentWord] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
@@ -172,7 +180,7 @@ export default function LandingPage() {
             letterSpacing: '-0.02em',
             margin: 0,
           }}>
-            We analyze...
+            {t('landing.we_analyze')}
             <br />
             <span style={{
               background: 'linear-gradient(135deg, #4ade80, #a3e635)',
@@ -194,7 +202,7 @@ export default function LandingPage() {
             marginRight: 'auto',
             lineHeight: 1.6,
           }}>
-            Unlock the full potential of your land with AI-driven insights.
+            {t('landing.unlock')}
           </p>
         </div>
       </section>
@@ -256,7 +264,7 @@ export default function LandingPage() {
               color: '#4ade80',
               marginBottom: '1rem',
             }}>
-              — Soil Analysis
+              {t('landing.soil_analysis')}
             </p>
             <h2 style={{
               fontSize: 'clamp(2rem, 4vw, 3rem)',
@@ -265,14 +273,14 @@ export default function LandingPage() {
               lineHeight: 1.15,
               marginBottom: '1.25rem',
             }}>
-              Soil Intelligence
+              {t('landing.soil_intelligence')}
             </h2>
             <p style={{
               fontSize: 'clamp(0.95rem, 1.8vw, 1.1rem)',
               color: 'rgba(255,255,255,0.65)',
               lineHeight: 1.7,
             }}>
-              Analyze soil parameters like N, P, K, and pH to understand soil health and make precise agricultural decisions.
+              {t('landing.soil_desc')}
             </p>
           </div>
         </div>
@@ -337,7 +345,7 @@ export default function LandingPage() {
               color: '#a3e635',
               marginBottom: '1rem',
             }}>
-              — AI Powered
+              {t('landing.ai_powered')}
             </p>
             <h2 style={{
               fontSize: 'clamp(2rem, 4vw, 3rem)',
@@ -346,14 +354,14 @@ export default function LandingPage() {
               lineHeight: 1.15,
               marginBottom: '1.25rem',
             }}>
-              Smart Recommendations
+              {t('landing.smart_recs')}
             </h2>
             <p style={{
               fontSize: 'clamp(0.95rem, 1.8vw, 1.1rem)',
               color: 'rgba(255,255,255,0.65)',
               lineHeight: 1.7,
             }}>
-              Get AI-powered fertilizer suggestions, crop predictions, and yield insights based on real-time soil and environmental data.
+              {t('landing.smart_desc')}
             </p>
           </div>
         </div>
@@ -412,7 +420,7 @@ export default function LandingPage() {
             outline: 'none',
           }}
         >
-          Get Started
+          {t('landing.get_started')}
         </button>
       </section>
 

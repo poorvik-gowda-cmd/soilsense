@@ -1,5 +1,6 @@
 import React from "react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import Plotly from "plotly.js-dist-min";
 import createPlotlyComponent from "react-plotly.js/factory";
 import SoilMap from "../components/SoilMap";
@@ -24,10 +25,10 @@ const PRIORITY_BADGE = {
 };
 
 /* ── SHI Arc Gauge ──────────────────────────────────────────────────────────── */
-function SHIGauge({ score, category, color, components }) {
+function SHIGauge({ score, category, color, components, t }) {
   return (
     <div className="card shi-card">
-      <h3 className="card-title">🌍 Soil Health Index</h3>
+      <h3 className="card-title">{t('results.shi_title')}</h3>
       <Plot
         data={[{
           type: "indicator",
@@ -61,7 +62,7 @@ function SHIGauge({ score, category, color, components }) {
       />
       <div className="shi-footer">
         <span className={`badge ${BADGE_MAP[category] || "badge-amber"}`}>{category}</span>
-        <span className="shi-score-label">Score: {score} / 100</span>
+        <span className="shi-score-label">{t('results.score')}: {score} / 100</span>
       </div>
       {/* Component breakdown */}
       <div className="shi-components">
@@ -80,7 +81,7 @@ function SHIGauge({ score, category, color, components }) {
 }
 
 /* ── Crop Recommendation Card ───────────────────────────────────────────────── */
-function CropCard({ ml, top3 }) {
+function CropCard({ ml, top3, t }) {
   const emoji = {
     rice: "🌾", wheat: "🌿", maize: "🌽", cotton: "🌸", coffee: "☕",
     banana: "🍌", mango: "🥭", apple: "🍎", grapes: "🍇", coconut: "🥥",
@@ -92,12 +93,12 @@ function CropCard({ ml, top3 }) {
 
   return (
     <div className="card crop-card">
-      <h3 className="card-title">🤖 ML Recommendation</h3>
+      <h3 className="card-title">{t('results.ml_title')}</h3>
       <div className="crop-hero">
         <span className="crop-emoji">{emoji}</span>
         <div>
-          <div className="crop-name">{ml.crop_recommendation || "Unknown"}</div>
-          <div className="crop-conf">{ml.confidence || 0}% confidence</div>
+          <div className="crop-name">{ml.crop_recommendation ? t(`crops.${ml.crop_recommendation.toLowerCase().replace(/\s/g, '')}`, { defaultValue: ml.crop_recommendation }) : t('results.unknown')}</div>
+          <div className="crop-conf">{ml.confidence || 0}% {t('results.confidence')}</div>
         </div>
       </div>
 
@@ -107,18 +108,18 @@ function CropCard({ ml, top3 }) {
 
       <div className="yield-row">
         <div className="yield-box">
-          <span className="yield-label">Est. Yield</span>
+          <span className="yield-label">{t('results.est_yield')}</span>
           <span className="yield-value">{ml.yield_estimate_t_ha || 0} <small>t/ha</small></span>
         </div>
       </div>
 
       <div className="divider" />
-      <p className="top3-label">Top 3 Predictions</p>
+      <p className="top3-label">{t('results.top3')}</p>
       <div className="top3-list">
         {top3.map((c, i) => (
           <div key={c.crop || i} className={`top3-item ${i === 0 ? "top3-winner" : ""}`}>
             <span className="top3-rank">#{i+1}</span>
-            <span className="top3-crop">{c.crop}</span>
+            <span className="top3-crop">{c.crop ? t(`crops.${c.crop.toLowerCase().replace(/\s/g, '')}`, { defaultValue: c.crop }) : t('results.unknown')}</span>
             <span className="top3-pct">{((c.confidence || 0) * 100).toFixed(1)}%</span>
           </div>
         ))}
@@ -128,7 +129,7 @@ function CropCard({ ml, top3 }) {
 }
 
 /* ── NPK Chart ──────────────────────────────────────────────────────────────── */
-function NPKChart({ input }) {
+function NPKChart({ input, t }) {
   const nutrients = ["N", "P", "K"];
   const values    = [input.N, input.P, input.K];
   const optHigh   = [280, 25, 280];
@@ -136,7 +137,7 @@ function NPKChart({ input }) {
 
   return (
     <div className="card">
-      <h3 className="card-title">📊 NPK Levels</h3>
+      <h3 className="card-title">{t('results.npk_title')}</h3>
       <Plot
         data={[{
           type: "bar",
@@ -160,24 +161,24 @@ function NPKChart({ input }) {
         style={{ width: "100%" }}
       />
       <div className="npk-labels">
-        <span>N: Nitrogen</span><span>P: Phosphorus</span><span>K: Potassium</span>
+        <span>{t('results.n_label')}</span><span>{t('results.p_label')}</span><span>{t('results.k_label')}</span>
       </div>
     </div>
   );
 }
 
 /* ── Environment Summary ────────────────────────────────────────────────────── */
-function EnvSummary({ input }) {
+function EnvSummary({ input, t }) {
   const items = [
-    { label: "pH",          value: input.pH,             unit: "",      icon: "⚗️" },
-    { label: "Temperature", value: input.temperature,    unit: "°C",    icon: "🌡️" },
-    { label: "Humidity",    value: input.humidity,       unit: "%",     icon: "💧" },
-    { label: "Rainfall",    value: input.rainfall,       unit: "mm/yr", icon: "🌧️" },
-    { label: "Organic C",   value: input.organic_carbon, unit: "%",     icon: "🌿" },
+    { label: t('fields.pH.label'),          value: input.pH,             unit: "",      icon: "⚗️" },
+    { label: t('fields.temperature.label'), value: input.temperature,    unit: "°C",    icon: "🌡️" },
+    { label: t('fields.humidity.label'),    value: input.humidity,       unit: "%",     icon: "💧" },
+    { label: t('fields.rainfall.label'),    value: input.rainfall,       unit: "mm/yr", icon: "🌧️" },
+    { label: t('fields.organic_carbon.label'), value: input.organic_carbon, unit: "%",     icon: "🌿" },
   ];
   return (
     <div className="card">
-      <h3 className="card-title">🌦️ Environment Summary</h3>
+      <h3 className="card-title">{t('results.env_title')}</h3>
       <div className="env-grid">
         {items.map(i => (
           <div key={i.label} className="env-item">
@@ -192,10 +193,10 @@ function EnvSummary({ input }) {
 }
 
 /* ── Fertilizer Advice ──────────────────────────────────────────────────────── */
-function FertilizerPanel({ advice }) {
+function FertilizerPanel({ advice, t }) {
   return (
     <div className="card fert-card">
-      <h3 className="card-title">🧬 Fertilizer Prescription</h3>
+      <h3 className="card-title">{t('results.fert_title')}</h3>
       <div className="fert-list">
         {advice.map((a, i) => (
           <div key={i} className="fert-item">
@@ -205,9 +206,9 @@ function FertilizerPanel({ advice }) {
               </span>
               <span className="fert-product">{a.product}</span>
             </div>
-            <p className="fert-reason">{a.reason}</p>
+            <p className="fert-reason">{t(`results.fert.${a.reason}`, { defaultValue: a.reason })}</p>
             <div className="fert-dosage">
-              📐 <strong>Dosage:</strong> {a.dosage}
+              📐 <strong>{t('results.dosage')}:</strong> {t(`results.fert.${a.dosage}`, { defaultValue: a.dosage })}
             </div>
           </div>
         ))}
@@ -246,12 +247,13 @@ class ErrorBoundary extends React.Component {
 export default function Results() {
   const { state } = useLocation();
   const navigate  = useNavigate();
+  const { t } = useTranslation();
 
   if (!state?.result) {
     return (
       <div className="container" style={{ paddingTop: "4rem", textAlign: "center" }}>
-        <p style={{ color: "var(--text-muted)", marginBottom: "1.5rem" }}>No results yet.</p>
-        <Link to="/" className="btn btn-primary">← Go Analyze</Link>
+        <p style={{ color: "var(--text-muted)", marginBottom: "1.5rem" }}>{t('results.no_results')}</p>
+        <Link to="/" className="btn btn-primary">{t('results.go_analyze')}</Link>
       </div>
     );
   }
@@ -264,14 +266,14 @@ export default function Results() {
 
   // ── Parameter Heatmap Data (real, data-driven) ───────────────────────────────
   const PARAM_RANGES = [
-    { key: "N",    label: "Nitrogen",   val: input.N,              min: 0, max: 280, ideal: 140 },
-    { key: "P",    label: "Phosphorus", val: input.P,              min: 0, max: 50,  ideal: 25  },
-    { key: "K",    label: "Potassium",  val: input.K,              min: 0, max: 280, ideal: 200 },
-    { key: "pH",   label: "pH",         val: input.pH,             min: 3.5, max: 10, ideal: 6.5 },
-    { key: "Temp", label: "Temperature",val: input.temperature,   min: 0, max: 55,  ideal: 25  },
-    { key: "Hum",  label: "Humidity",   val: input.humidity,      min: 0, max: 100, ideal: 65  },
-    { key: "Rain", label: "Rainfall",   val: input.rainfall,      min: 0, max: 3000, ideal: 800 },
-    { key: "OC",   label: "Org. Carbon",val: input.organic_carbon, min: 0, max: 5,  ideal: 2.0 },
+    { key: "N",    label: t('fields.N.label'),   val: input.N,              min: 0, max: 280, ideal: 140 },
+    { key: "P",    label: t('fields.P.label'), val: input.P,              min: 0, max: 50,  ideal: 25  },
+    { key: "K",    label: t('fields.K.label'),  val: input.K,              min: 0, max: 280, ideal: 200 },
+    { key: "pH",   label: t('fields.pH.label'),         val: input.pH,             min: 3.5, max: 10, ideal: 6.5 },
+    { key: "Temp", label: t('fields.temperature.label'),val: input.temperature,   min: 0, max: 55,  ideal: 25  },
+    { key: "Hum",  label: t('fields.humidity.label'),   val: input.humidity,      min: 0, max: 100, ideal: 65  },
+    { key: "Rain", label: t('fields.rainfall.label'),   val: input.rainfall,      min: 0, max: 3000, ideal: 800 },
+    { key: "OC",   label: t('fields.organic_carbon.label'),val: input.organic_carbon, min: 0, max: 5,  ideal: 2.0 },
   ];
   // Score: distance from ideal as fraction of range → higher = closer to ideal
   const heatScores = PARAM_RANGES.map(p => {
@@ -298,8 +300,8 @@ export default function Results() {
       <div className="results-page">
         <div className="container">
           <div className="page-header fade-up">
-            <h1>Analysis <span className="grad-text">Results</span></h1>
-            <p>AI-powered soil intelligence — prediction + prescription</p>
+            <h1>{t('results.title1')} <span className="grad-text">{t('results.title2')}</span></h1>
+            <p>{t('results.subtitle')}</p>
           </div>
 
           {/* Row 1: SHI + Crop + NPK */}
@@ -309,25 +311,25 @@ export default function Results() {
               category={soil_health.category || "Unknown"}
               color={soil_health.color || "#ccc"}
               components={components}
+              t={t}
             />
             <div className="results-col-right">
-              <CropCard ml={ml} top3={top3} />
-              <NPKChart input={input} />
+              <CropCard ml={ml} top3={top3} t={t} />
+              <NPKChart input={input} t={t} />
             </div>
           </div>
 
           {/* Row 2: Fertilizer + Env */}
           <div className="results-grid-bottom fade-up">
-            <FertilizerPanel advice={fertilizer_advice} />
-            <EnvSummary input={input} />
+            <FertilizerPanel advice={fertilizer_advice} t={t} />
+            <EnvSummary input={input} t={t} />
           </div>
 
           {/* Row 3: Parameter Heatmap */}
           <div className="card full-width-card fade-up" style={{ marginTop: "2rem" }}>
-            <h3 className="card-title">🌡️ Soil Parameter Adequacy Heatmap</h3>
+            <h3 className="card-title">{t('results.heatmap_title')}</h3>
             <p style={{ color: "var(--text-muted)", fontSize: "0.875rem", marginBottom: "0.5rem" }}>
-              Each cell shows how close this parameter is to its ideal value (1.0 = perfect, 0.0 = critical).
-              Computed from your actual input values.
+              {t('results.heatmap_desc')}
             </p>
             <Plot
               data={[{
@@ -364,19 +366,19 @@ export default function Results() {
 
           {/* Row 4: Soil Map */}
           <div className="card full-width-card fade-up" style={{ marginTop: "2rem" }}>
-            <h3 className="card-title">🗺️ Sample Location Map</h3>
+            <h3 className="card-title">{t('results.map_title')}</h3>
             <p style={{ color: "var(--text-muted)", fontSize: "0.875rem", marginBottom: "1rem" }}>
               {mapPoints.length > 0
-                ? "Your sample location with soil health color-coded."
-                : "Add Latitude & Longitude on the Analyze page to see your sample on the map."}
+                ? t('results.map_desc1')
+                : t('results.map_desc2')}
             </p>
             <SoilMap points={mapPoints} />
           </div>
 
           <div className="results-actions fade-up">
-            <button className="btn btn-ghost" onClick={() => navigate("/")}>← New Analysis</button>
-            <Link to="/history" className="btn btn-ghost">📋 View History</Link>
-            <Link to="/analytics" className="btn btn-ghost">📊 Analytics</Link>
+            <button className="btn btn-ghost" onClick={() => navigate("/")}>{t('results.new_analysis')}</button>
+            <Link to="/history" className="btn btn-ghost">{t('results.view_history')}</Link>
+            <Link to="/analytics" className="btn btn-ghost">{t('results.analytics')}</Link>
           </div>
         </div>
       </div>

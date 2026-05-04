@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useTranslation } from "react-i18next";
 import "./Auth.css";
 
 export default function Auth() {
@@ -13,6 +14,7 @@ export default function Auth() {
   
   const { login, signup } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,11 +30,11 @@ export default function Auth() {
       } else {
         const { error } = await signup(email, password);
         if (error) throw error;
-        setMsg("Registration successful! You can now log in.");
+        setMsg(t("auth.reg_success"));
         setIsLogin(true);
       }
     } catch (err) {
-      setError(err.message || "An error occurred.");
+      setError(err.message || t("auth.error"));
     } finally {
       setLoading(false);
     }
@@ -42,11 +44,11 @@ export default function Auth() {
     <div className="auth-page">
       <div className="auth-card fade-up">
         <h1 className="auth-title">
-          {isLogin ? "Welcome Back" : "Join "}
+          {isLogin ? t("auth.welcome_back") : t("auth.join")}
           <span className="grad-text">SoilSense AI</span>
         </h1>
         <p className="auth-subtitle">
-          {isLogin ? "Sign in to access your dashboard" : "Create an account to save your analysis"}
+          {isLogin ? t("auth.sign_in") : t("auth.create_account")}
         </p>
 
         {error && <div className="auth-error">{error}</div>}
@@ -54,36 +56,36 @@ export default function Auth() {
 
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="input-group">
-            <label>Email</label>
+            <label>{t("auth.email")}</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
+              placeholder={t("auth.enter_email")}
               required
             />
           </div>
           <div className="input-group">
-            <label>Password</label>
+            <label>{t("auth.password")}</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
+              placeholder={t("auth.enter_password")}
               required
               minLength={6}
             />
           </div>
 
           <button type="submit" className="btn btn-primary auth-submit" disabled={loading}>
-            {loading ? <span className="spinner" /> : (isLogin ? "Log In" : "Sign Up")}
+            {loading ? <span className="spinner" /> : (isLogin ? t("auth.log_in") : t("auth.sign_up"))}
           </button>
         </form>
 
         <div className="auth-toggle">
-          {isLogin ? "Don't have an account? " : "Already have an account? "}
+          {isLogin ? t("auth.no_account") : t("auth.has_account")}
           <button type="button" className="btn-link" onClick={() => setIsLogin(!isLogin)}>
-            {isLogin ? "Sign Up" : "Log In"}
+            {isLogin ? t("auth.sign_up") : t("auth.log_in")}
           </button>
         </div>
       </div>

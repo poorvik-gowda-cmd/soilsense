@@ -1,18 +1,19 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { predictSoil, parseVoiceText } from "../api/client";
 import CsvUploader from "../components/CsvUploader";
 import "./Home.css";
 
 const FIELDS = [
-  { key: "N",              label: "Nitrogen (N)",         unit: "kg/ha",  min: 0,   max: 560,  step: 1,    default: 90,  desc: "Available soil nitrogen" },
-  { key: "P",              label: "Phosphorus (P)",       unit: "kg/ha",  min: 0,   max: 50,   step: 0.5,  default: 42,  desc: "Available phosphorus" },
-  { key: "K",              label: "Potassium (K)",        unit: "kg/ha",  min: 0,   max: 500,  step: 1,    default: 43,  desc: "Available potassium" },
-  { key: "pH",             label: "Soil pH",              unit: "",       min: 3.5, max: 10,   step: 0.1,  default: 6.5, desc: "Acidity / alkalinity (ideal: 6–7)" },
-  { key: "temperature",    label: "Temperature",          unit: "°C",     min: 0,   max: 55,   step: 0.5,  default: 25,  desc: "Mean annual temperature" },
-  { key: "humidity",       label: "Humidity",             unit: "%",      min: 0,   max: 100,  step: 1,    default: 80,  desc: "Relative humidity %" },
-  { key: "rainfall",       label: "Rainfall",             unit: "mm/yr",  min: 0,   max: 5000, step: 5,    default: 200, desc: "Annual rainfall" },
-  { key: "organic_carbon", label: "Organic Carbon",       unit: "%",      min: 0,   max: 5,    step: 0.05, default: 0.8, desc: "Soil organic carbon %" },
+  { key: "N",              unit: "kg/ha",  min: 0,   max: 560,  step: 1,    default: 90 },
+  { key: "P",              unit: "kg/ha",  min: 0,   max: 50,   step: 0.5,  default: 42 },
+  { key: "K",              unit: "kg/ha",  min: 0,   max: 500,  step: 1,    default: 43 },
+  { key: "pH",             unit: "",       min: 3.5, max: 10,   step: 0.1,  default: 6.5 },
+  { key: "temperature",    unit: "°C",     min: 0,   max: 55,   step: 0.5,  default: 25 },
+  { key: "humidity",       unit: "%",      min: 0,   max: 100,  step: 1,    default: 80 },
+  { key: "rainfall",       unit: "mm/yr",  min: 0,   max: 5000, step: 5,    default: 200 },
+  { key: "organic_carbon", unit: "%",      min: 0,   max: 5,    step: 0.05, default: 0.8 },
 ];
 
 const GEO_DEFAULT = { latitude: "", longitude: "" };
@@ -21,14 +22,14 @@ function buildDefaults() {
   return Object.fromEntries(FIELDS.map(f => [f.key, f.default]));
 }
 
-function SliderInput({ field, value, onChange }) {
+function SliderInput({ field, value, onChange, t }) {
   const pct = ((value - field.min) / (field.max - field.min)) * 100;
   return (
     <div className="field-card">
       <div className="field-header">
         <div>
-          <span className="form-label">{field.label}</span>
-          <span className="field-desc">{field.desc}</span>
+          <span className="form-label">{t(`fields.${field.key}.label`)}</span>
+          <span className="field-desc">{t(`fields.${field.key}.desc`)}</span>
         </div>
         <div className="field-value-box">
           <input
@@ -63,6 +64,7 @@ function SliderInput({ field, value, onChange }) {
 }
 
 export default function Home() {
+  const { t }                 = useTranslation();
   const [values, setValues]   = useState(buildDefaults());
   const [geo, setGeo]         = useState({ latitude: "", longitude: "" });
   const [loading, setLoading] = useState(false);
@@ -133,8 +135,8 @@ export default function Home() {
     <div className="home-page">
       <div className="container">
         <div className="page-header fade-up">
-          <h1>Soil <span className="grad-text">Health Analysis</span></h1>
-          <p>Enter your soil parameters to get crop recommendations, yield forecasts, and precision fertilizer advice.</p>
+          <h1>{t('home.title1')} <span className="grad-text">{t('home.title2')}</span></h1>
+          <p>{t('home.subtitle')}</p>
         </div>
 
         <div className="fade-up" style={{ marginBottom: "2rem" }}>
@@ -146,7 +148,7 @@ export default function Home() {
         <form onSubmit={handleSubmit} className="soil-form fade-up">
           <div className="form-section">
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <h2 className="section-title" style={{ margin: 0 }}>🧪 Soil Nutrients</h2>
+              <h2 className="section-title" style={{ margin: 0 }}>{t('home.soil_nutrients')}</h2>
               <button 
                 type="button" 
                 onClick={handleVoice} 
@@ -154,12 +156,12 @@ export default function Home() {
                 className="btn btn-ghost" 
                 style={{ padding: "0.5rem 1rem", fontSize: "1rem", borderRadius: "20px", display: "flex", alignItems: "center", gap: "0.5rem" }}
               >
-                {listening ? <><span className="spinner" style={{width: "14px", height: "14px"}}/> Listening...</> : "🎤 Voice Input"}
+                {listening ? <><span className="spinner" style={{width: "14px", height: "14px"}}/> {t('home.listening')}</> : t('home.voice_input')}
               </button>
             </div>
             <div className="fields-grid">
               {FIELDS.slice(0,4).map(f => (
-                <SliderInput key={f.key} field={f} value={values[f.key]} onChange={handleChange} />
+                <SliderInput key={f.key} field={f} value={values[f.key]} onChange={handleChange} t={t} />
               ))}
             </div>
           </div>
@@ -167,10 +169,10 @@ export default function Home() {
           <div className="divider" />
 
           <div className="form-section">
-            <h2 className="section-title">🌦️ Environment</h2>
+            <h2 className="section-title">{t('home.environment')}</h2>
             <div className="fields-grid">
               {FIELDS.slice(4).map(f => (
-                <SliderInput key={f.key} field={f} value={values[f.key]} onChange={handleChange} />
+                <SliderInput key={f.key} field={f} value={values[f.key]} onChange={handleChange} t={t} />
               ))}
             </div>
           </div>
@@ -179,17 +181,17 @@ export default function Home() {
 
           <div className="form-section">
             <h2 className="section-title">
-              📍 Location
+              {t('home.location')}
               <span style={{ fontSize: "0.8rem", color: "var(--text-muted)", fontWeight: 400, marginLeft: "0.75rem" }}>
-                optional — enables soil map on results
+                {t('home.location_optional')}
               </span>
             </h2>
             <div className="fields-grid">
               <div className="field-card">
                 <div className="field-header">
                   <div>
-                    <span className="form-label">Latitude</span>
-                    <span className="field-desc">Degrees North/South (−90 to 90)</span>
+                    <span className="form-label">{t('home.latitude')}</span>
+                    <span className="field-desc">{t('home.latitude_desc')}</span>
                   </div>
                   <div className="field-value-box">
                     <input
@@ -206,8 +208,8 @@ export default function Home() {
               <div className="field-card">
                 <div className="field-header">
                   <div>
-                    <span className="form-label">Longitude</span>
-                    <span className="field-desc">Degrees East/West (−180 to 180)</span>
+                    <span className="form-label">{t('home.longitude')}</span>
+                    <span className="field-desc">{t('home.longitude_desc')}</span>
                   </div>
                   <div className="field-value-box">
                     <input
@@ -232,10 +234,10 @@ export default function Home() {
 
           <div className="form-actions">
             <button type="button" className="btn btn-ghost" onClick={handleReset}>
-              Reset Defaults
+              {t('home.reset')}
             </button>
             <button type="submit" className="btn btn-primary" disabled={loading}>
-              {loading ? <><span className="spinner" /> Analyzing…</> : "🔍 Analyze Soil"}
+              {loading ? <><span className="spinner" /> {t('home.analyzing')}</> : t('home.analyze_btn')}
             </button>
           </div>
         </form>
