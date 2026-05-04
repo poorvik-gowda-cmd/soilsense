@@ -53,7 +53,7 @@ export default function Auth() {
       {/* Back to Landing Page */}
       <Link to="/" className="auth-back-btn">
         <span className="auth-back-arrow">←</span>
-        Back to Home
+        {t("auth.back_to_home")}
       </Link>
 
       {/* Auth Card */}

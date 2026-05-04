@@ -123,7 +123,8 @@
     "log_in": "लॉग इन",
     "sign_up": "साइन अप",
     "no_account": "खाता नहीं है? ",
-    "has_account": "पहले से ही खाता है? "
+    "has_account": "पहले से ही खाता है? ",
+    "back_to_home": "होम पर वापस जाएं"
   },
   "history_page": {
     "title1": "भविष्यवाणी",

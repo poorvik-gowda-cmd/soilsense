@@ -123,7 +123,8 @@
     "log_in": "Log In",
     "sign_up": "Sign Up",
     "no_account": "Don't have an account? ",
-    "has_account": "Already have an account? "
+    "has_account": "Already have an account? ",
+    "back_to_home": "Back to Home"
   },
   "history_page": {
     "title1": "Prediction",
