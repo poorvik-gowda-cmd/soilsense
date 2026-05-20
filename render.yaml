@@ -1,12 +1,30 @@
 services:
+  # ── Backend: FastAPI ────────────────────────────────────────────────────────
   - type: web
     name: soilsense-api
     env: python
+    rootDir: .
     buildCommand: pip install -r requirements.txt && python src/train_model.py
     startCommand: uvicorn api.app:app --host 0.0.0.0 --port $PORT
-    rootDir: .
     envVars:
       - key: SUPABASE_URL
         sync: false
       - key: SUPABASE_ANON_KEY
+        sync: false
+      - key: MISTRAL_API_KEY
+        sync: false
+
+  # ── Frontend: Vite + React ──────────────────────────────────────────────────
+  - type: web
+    name: soilsense-frontend
+    env: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_URL
+        sync: false
+      - key: VITE_SUPABASE_URL
+        sync: false
+      - key: VITE_SUPABASE_ANON_KEY
         sync: false

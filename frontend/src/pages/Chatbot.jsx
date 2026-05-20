@@ -42,7 +42,8 @@ export default function Chatbot() {
       setMessages((prev) => [...prev, aiMessage]);
     } catch (error) {
       console.error("Chat error:", error);
-      const errorMessage = { role: "assistant", content: "Sorry, I am having trouble connecting to my servers right now. Please try again later." };
+      const serverError = error?.response?.data?.detail || error?.message || "Unknown error";
+      const errorMessage = { role: "assistant", content: `⚠️ Error: ${serverError}` };
       setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setLoading(false);

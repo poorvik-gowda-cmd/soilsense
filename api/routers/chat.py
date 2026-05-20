@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel
 import os
 import json
-from mistralai import Mistral
+from mistralai.client import Mistral
 from typing import List, Dict, Optional
 from db.supabase_client import fetch_history
 
@@ -76,5 +76,7 @@ Use bullet points for readability. Keep responses concise and practical. Do NOT 
         return {"reply": reply}
         
     except Exception as e:
+        import traceback
+        traceback.print_exc()
         print("Chat Error:", str(e))
         raise HTTPException(status_code=500, detail=str(e))
